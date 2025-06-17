@@ -71,6 +71,7 @@ void loop() {
 }
 ```
 # Starter Project
+<iframe width="560" height="315" src="https://www.youtube.com/embed/hvmn-ZRGc-s?si=e3y54EeRpLe8XQBL" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 # Bill of Materials
 Here's where you'll list the parts in your project. To add more rows, just copy and paste the example rows below.
