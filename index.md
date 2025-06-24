@@ -77,6 +77,7 @@ Components: 1 buzzer, 1 electric capacitator, 1 micro USB, 1 power cable, 1 self
 How it works: The retro arcade console is a mini arcade console that can be used to play several classic arcade games such as Tetris, Snake, and racing car. It utilizes LED dot matrix screens to present the dynamic displays of each game. The user can use buttons to make their choices; when a key is pressed, the corresponding IO can be set for the microcontroller to detect. 
 
 Button Functions: 
+
 ![button image](buttoncontrols.png)
 
 Challenges: The retro arcade console was relatively easy to assemble. The soldering was simple and was just slightly tedious due to the number of joints that needed to be made. The main challenge for me was figuring out how to connect the battery back to the PCB. Other than that, no challenges were faced. 
