@@ -74,15 +74,15 @@ void loop() {
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hvmn-ZRGc-s?si=3SyQsaWPOCVCY1et" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 Components: 1 buzzer, 1 electric capacitator, 1 micro USB, 1 power cable, 1 self-switch, 1 self-switch cap, 1digitron display, 1IC chip, 2 LED dot matrix modules, 6 buttons, 6 button caps, 1 PCB, 8 M3x5mm screws, 2 M3x8mm screws, 4 copper columns, 4 hexagonal columns, 1 AAA battery case, and 6 arcrylis shells.
 
-How it works: The retro arcade console is a mini arcade console that can be used to play several classic arcade games such as Tetris, Snake, and racing car. It utilizes LED dot matrix screens to present the dynamic displays of each game. The user can use buttons to make their choices; when a key is pressed, the corresponding IO can be set for the microcontroller to detect. 
+How it works: The retro arcade console is a beginner-friendly DIY electronics project. It includes a pre-designed printed circuit board (PCB) and various electronic components like LEDs, resistors, and buttons. Users solder the components onto the PCB following clear instructions. Once assembled and powered, the kit functions as a mini interactive arcade display where the user can play various different retro arcade games such as Tetris and Snake. It's designed to help beginners practice soldering while creating a fun, working gadget.
 
 Button Functions: 
 
 ![button image](buttoncontrols.png)
 
-Challenges: The retro arcade console was relatively easy to assemble. The soldering was simple and was just slightly tedious due to the number of joints that needed to be made. The main challenge for me was figuring out how to connect the battery back to the PCB. Other than that, no challenges were faced. 
+Challenges: The retro arcade console was relatively easy to assemble. The soldering was simple and was just slightly tedious due to the number of joints that needed to be made. The main challenge for me was figuring out how to connect the battery back to the PCB, given unclear instructions. Other than that, no challenges were faced. 
 
-# Bill of Materials
+# Bill of Materials(Intensive Project)
 Here's where you'll list the parts in your project. To add more rows, just copy and paste the example rows below.
 Don't forget to place the link of where to buy each component inside the quotation marks in the corresponding row after href =. Follow the guide [here]([url](https://www.markdownguide.org/extended-syntax/)) to learn how to customize this to your project needs. 
 
