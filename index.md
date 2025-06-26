@@ -54,25 +54,25 @@ The project mainly relies on the ESP8266, a Wi-Fi-enabled microcontroller that a
 
 Together, these components provide a functional and customizable smart lamp system:
 
-    -The DHT11 allows the user to monitor room temperature and humidity.
+       -The DHT11 allows the user to monitor room temperature and humidity.
+       
+       -The HC-SR501 enables motion detection and potential intruder alerts.
+       
+       -The NeoPixel ring offers customizable ambient lighting.
   
-    -The HC-SR501 enables motion detection and potential intruder alerts.
-  
-    -The NeoPixel ring offers customizable ambient lighting.
-  
-    -The photoresistor automatically adjusts brightness based on room lighting conditions.
+       -The photoresistor automatically adjusts brightness based on room lighting conditions.
 
 One of the biggest challenges I faced was that the tutorial I was originally provided used the Cayenne IoT platform, which has since shut down. This required me to search for alternative resources and experiment independently to determine the best way to wire my circuit and test individual components. Additionally, as someone with limited prior experience in physical computing and circuit wiring, I encountered some trial-and-error issues during setup. However, in the end, I was able to get the circuit functioning correctly.
 
 In the next milestone, I will focus on uploading and integrating all the code needed to make the components work together. I will also create an Adafruit IO dashboard, allowing the user to:
 
-    -View real-time temperature, humidity, motion, and brightness data
+       -View real-time temperature, humidity, motion, and brightness data
   
-    -Customize the color of the lamp through the NeoPixel ring
+       -Customize the color of the lamp through the NeoPixel ring
   
-    -Receive automated email alerts for abnormal temperature/humidity levels
+       -Receive automated email alerts for abnormal temperature/humidity levels
   
-    -Be notified when motion is detected while the lamp is in “safe mode”
+       -Be notified when motion is detected while the lamp is in “safe mode”
   
 By the end of the next milestone, the smart lamp will be fully functional, customizable, and interactive through a clean, user-friendly IoT interface.
 
