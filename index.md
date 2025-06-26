@@ -44,14 +44,30 @@ For your second milestone, explain what you've worked on since your previous mil
 
 **Don't forget to replace the text below with the embedding for your milestone video. Go to Youtube, click Share -> Embed, and copy and paste the code to replace what's below.**
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/CaCazFBhYKs" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/_4Cy8AbWqvQ?si=k65Cnbasy8dO3p2p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-For your first milestone, describe what your project is and how you plan to build it. You can include:
-- An explanation about the different components of your project and how they will all integrate together
-- Technical progress you've made so far
-- Challenges you're facing and solving in your future milestones
-- What your plan is to complete your project
-For my first milestone, I 
+For my first milestone, I essentially tested all sensors and components on my breadboard individually before wiring them all up onto the circuit. 
+
+My IoT Smart Lamp integrates several sensors and components, including the DHT11 (temperature/humidity sensor), HC-SR501 (motion detector), photoresistor (light sensor), a NeoPixel 12-LED ring, and an ESP8266 microcontroller.
+
+The project mainly relies on the ESP8266, a Wi-Fi-enabled microcontroller that allows all connected components to send and receive data over the internet. The DHT11 sensor measures both temperature and humidity. It uses a humidity sensor (which detects changes in capacitance) and a thermistor (which detects temperature changes via resistance). These readings are processed internally and output as digital data. The HC-SR501 motion sensor uses infrared to detect motion by sensing heat changes in its surroundings, signaling when movement is detected. The NeoPixel ring consists of 12 individually addressable RGB LEDs, each with its own integrated circuit. This allows for custom color and brightness control, adding a visual and aesthetic element to the lamp. Lastly, the photoresistor (or light-dependent resistor) adjusts brightness based on ambient light levels by varying its resistance depending on light exposure.
+
+Together, these components provide a functional and customizable smart lamp system:
+  -The DHT11 allows the user to monitor room temperature and humidity.
+  -The HC-SR501 enables motion detection and potential intruder alerts.
+  -The NeoPixel ring offers customizable ambient lighting.
+  -The photoresistor automatically adjusts brightness based on room lighting conditions.
+
+One of the biggest challenges I faced was that the tutorial I was originally provided used the Cayenne IoT platform, which has since shut down. This required me to search for alternative resources and experiment independently to determine the best way to wire my circuit and test individual components. Additionally, as someone with limited prior experience in physical computing and circuit wiring, I encountered some trial-and-error issues during setup. However, through persistence and research, I was able to get the circuit functioning correctly.
+
+In the next milestone, I will focus on uploading and integrating all the code needed to make the components work together. I will also create an Adafruit IO dashboard, allowing the user to:
+
+  -View real-time temperature, humidity, motion, and brightness data
+  -Customize the color of the lamp through the NeoPixel ring
+  -Receive automated email alerts for abnormal temperature/humidity levels
+  -Be notified when motion is detected while the lamp is in “safe mode”
+  
+By the end of the next milestone, the smart lamp will be fully functional, customizable, and interactive through a clean, user-friendly IoT interface.
 
 # Schematics 
 Here's where you'll put images of your schematics. [Tinkercad](https://www.tinkercad.com/blog/official-guide-to-tinkercad-circuits) and [Fritzing](https://fritzing.org/learning/) are both great resoruces to create professional schematic diagrams, though BSE recommends Tinkercad becuase it can be done easily and for free in the browser. 
