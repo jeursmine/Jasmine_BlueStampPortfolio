@@ -1,16 +1,13 @@
 # Smart Lamp
-Replace this text with a brief description (2-3 sentences) of your project. This description should draw the reader in and make them interested in what you've built. You can include what the biggest challenges, takeaways, and triumphs from completing the project were. As you complete your portfolio, remember your audience is less familiar than you are with all that your project entails!
+The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, temperature, and user commands from anywhere in the world via Adafruit IO. One of the biggest challenges was integrating multiple sensors (motion, temperature, LDR) and syncing them with cloud-based control, but the result is a responsive, customizable light that blends automation with real-time input from the user. Completing this project was a rewarding dive into IoT, where coding, electronics, and creativity all came together.
 
-You should comment out all portions of your portfolio that you have not completed yet, as well as any instructions:
 ```HTML 
 <!--- This is an HTML comment in Markdown -->
 <!--- Anything between these symbols will not render on the published site -->
 ```
 
-| Jasmine Q | Homestead High School | **Area of Interest** | Incoming Junior |
-|:--:|:--:|:--:|:--:|
+| Jasmine Q | Homestead High School | (area of interest) | Incoming Junior |
 
-**Replace the BlueStamp logo below with an image of yourself and your completed project. Follow the guide [here](https://tomcam.github.io/least-github-pages/adding-images-github-pages-site.html) if you need help.**
 
 ![Headstone Image](smallestpicture.png)
   
