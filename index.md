@@ -17,13 +17,13 @@ For my second milestone, I successfully integrated all components of my smart la
 
 Key features implemented include:
 
-  -Safe Mode: When toggled on via the dashboard, this mode triggers an email alert and activates a buzzer alarm if motion is detected in the room.
+    -Safe Mode: When toggled on via the dashboard, this mode triggers an email alert and activates a buzzer alarm if motion is detected in the room.
 
-  -Multicolor LED Ring: Users can select any desired color for the LED ring through the dashboard.
+    -Multicolor LED Ring: Users can select any desired color for the LED ring through the dashboard.
 
-  -Temperature and Humidity Monitoring: The system displays real-time temperature and humidity data and sends email notifications if values go above or below specified thresholds.
+    -Temperature and Humidity Monitoring: The system displays real-time temperature and humidity data and sends email notifications if values go above or below specified thresholds.
 
-  -Master Light Switch: When off, all lights are disabled. When on, the lamp will automatically turn on if motion is detected and remain on until the switch is turned off.
+    -Master Light Switch: When off, all lights are disabled. When on, the lamp will automatically turn on if motion is detected and remain on until the switch is turned off.
 
 One major challenge I encountered was inconsistent readings from the temperature and humidity sensor—it would occasionally return extreme or invalid values (e.g., negatives or values in the millions). To solve this, I implemented a filtering system using a while loop that rejects unrealistic values and only accepts valid sensor readings. I also added a short delay before the initial reading to allow the sensor time to calibrate properly.
 
@@ -41,25 +41,25 @@ The project mainly relies on the ESP8266, a Wi-Fi-enabled microcontroller that a
 
 Together, these components provide a functional and customizable smart lamp system:
 
-  -The DHT11 allows the user to monitor room temperature and humidity.
+    -The DHT11 allows the user to monitor room temperature and humidity.
        
-  -The HC-SR501 enables motion detection and potential intruder alerts.
-       
-  -The NeoPixel ring offers customizable ambient lighting.
-  
-  -The photoresistor automatically adjusts brightness based on room lighting conditions.
+    -The HC-SR501 enables motion detection and potential intruder alerts.
+         
+    -The NeoPixel ring offers customizable ambient lighting.
+    
+    -The photoresistor automatically adjusts brightness based on room lighting conditions.
 
 One of the biggest challenges I faced was that the tutorial I was originally provided used the Cayenne IoT platform, which has since shut down. This required me to search for alternative resources and experiment independently to determine the best way to wire my circuit and test individual components. Additionally, as someone with limited prior experience in physical computing and circuit wiring, I encountered some trial-and-error issues during setup. However, in the end, I was able to get the circuit functioning correctly.
 
 In the next milestone, I will focus on uploading and integrating all the code needed to make the components work together. I will also create an Adafruit IO dashboard, allowing the user to:
 
-  -View real-time temperature, humidity, motion, and brightness data
+    -View real-time temperature, humidity, motion, and brightness data
   
-  -Customize the color of the lamp through the NeoPixel ring
+    -Customize the color of the lamp through the NeoPixel ring
   
-  -Receive automated email alerts for abnormal temperature/humidity levels
+    -Receive automated email alerts for abnormal temperature/humidity levels
   
-  -Be notified when motion is detected while the lamp is in “safe mode”
+    -Be notified when motion is detected while the lamp is in “safe mode”
   
 By the end of the next milestone, the smart lamp will be fully functional, customizable, and interactive through a clean, user-friendly IoT interface.
 
