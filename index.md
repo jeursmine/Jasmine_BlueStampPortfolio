@@ -17,6 +17,9 @@ For my added feature, I decided to implement an alarm clock. I created two new f
 
 As stated before, the only challenge I faced was drilling the 0.9in hole into my box to fit the fresnel lens on my motion detector as the dremel was a bit hard to use. 
 
+Adafruit Dashboard: 
+![adafruit pic](image.png)
+
 
 # Second Milestone
 
