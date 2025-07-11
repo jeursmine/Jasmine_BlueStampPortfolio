@@ -2,7 +2,7 @@
 The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, temperature, and user commands from anywhere in the world via Adafruit IO. One of the biggest challenges was integrating multiple sensors (motion, temperature, LDR) and syncing them with cloud-based control, but the result is a responsive, customizable light that blends automation with real-time input from the user. Completing this project was a rewarding dive into IoT, where coding, electronics, and creativity all came together.
 
 
-| Jasmine Q | Homestead High School | Bioengineering | Incoming Junior |
+| Jasmine Q | Homestead High School | Bioengineering | Junior |
 
 
 ![Headstone Image](smallestpicture.png)
