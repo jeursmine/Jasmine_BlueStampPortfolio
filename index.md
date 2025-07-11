@@ -85,6 +85,7 @@ By the end of the next milestone, the smart lamp will be fully functional, custo
 ![SCHEMATICS](jasminesketch_bb.png)
 
 # Code
+Main Code: 
 ```c++
 #include "config.h"
 #include "Adafruit_NeoPixel.h"
@@ -429,6 +430,41 @@ String getCurrentTimeString() {
   sprintf(buffer, "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
   return String(buffer);
 }
+
+```
+Config.h code: 
+```c++
+/************************ Adafruit IO Config *******************************/
+
+// visit io.adafruit.com if you need to create an account,
+// or if you need your Adafruit IO key.
+#define IO_USERNAME "REPLACE WITH YOUR ADAFRUIT IO USERNAME"
+#define IO_KEY "REPLACE WITH YOUR ADAFRUIT IO USER KEY"
+
+/******************************* WIFI **************************************/
+
+
+
+#define WIFI_SSID "REPLACE WITH THE NAME OF YOUR WIFI"
+#define WIFI_PASS "REPLACE WITH YOUR WIFI PASSWORD"
+
+#include "AdafruitIO_WiFi.h"
+#include <ESP8266WiFi.h>
+
+#if defined(USE_AIRLIFT) || defined(ADAFRUIT_METRO_M4_AIRLIFT_LITE) ||         \
+    defined(ADAFRUIT_PYPORTAL)
+#if !defined(SPIWIFI_SS) 
+#define SPIWIFI SPI
+#define SPIWIFI_SS 10 
+#define NINA_ACK 9   
+#define NINA_RESETN 6 
+#define NINA_GPIO0 -1 
+#endif
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS, SPIWIFI_SS,
+                   NINA_ACK, NINA_RESETN, NINA_GPIO0, &SPIWIFI);
+#else
+AdafruitIO_WiFi io(IO_USERNAME, IO_KEY, WIFI_SSID, WIFI_PASS);
+#endif
 
 ```
 # Starter Project- Retro Arcade Console
