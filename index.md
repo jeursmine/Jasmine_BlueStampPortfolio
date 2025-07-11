@@ -20,6 +20,11 @@ As stated before, the only challenge I faced was drilling the 0.9in hole into my
 Adafruit Dashboard: 
 ![adafruit pic](image.png)
 
+Final Box w/ Enclosure: 
+
+![box pic](finalbox.png)
+
+
 
 # Second Milestone
 
