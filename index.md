@@ -66,7 +66,7 @@ In the next milestone, I will focus on uploading and integrating all the code ne
 By the end of the next milestone, the smart lamp will be fully functional, customizable, and interactive through a clean, user-friendly IoT interface.
 
 # Schematics 
-![SCHEMATICS](asdf.png)
+![SCHEMATICS](asfj.png)
 
 # Code
 
