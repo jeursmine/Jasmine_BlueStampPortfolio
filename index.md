@@ -9,6 +9,13 @@ The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, tempe
   
 # Final Milestone
 
+Insert vid
+
+For my final milestone, I customized the wooden enclosure for my breadboard and added an alarm clock feature to my project. I started with a wooden box that had a clear lid and made physical modifications to allow the components to function properly. I drilled a hole in the back for the power cable, which was straightforward, and a more challenging hole in the front for the Fresnel lens of the motion sensor. Since the lens had a diameter of 0.9 inches, I first drilled a 0.5-inch hole, then carefully widened it using a Dremel with a sanding attachment until the lens fit securely. I also cut squares from a stencil-making sheet and glued them to the inside of the lid to serve as a light diffuser. Once these modifications were complete, I was able to place the breadboard inside and power it with no issues. Additionally, I removed the photoresistor and the resistor and wire that went along with it from my circuit, as it served no purpose in what I desired to be on my final project.
+
+For my added feature, I decided to implement an alarm clock. I created two new feeds on Adafruit IO—“alarmonoff” to toggle the alarm and “time” to set the desired time in 24-hour format. I used a time library on Arduino to get the current time, formatted it properly, and added logic so that the piezo buzzer would only ring when the current time matched the user input and the alarm was turned on. This feature added a practical function to the lamp and pushed the project closer to a fully integrated smart device.
+
+As stated before, the only challenge I faced was drilling the 0.9in hole into my box to fit the fresnel lens on my motion detector as the dremel was a bit hard to use. 
 
 
 # Second Milestone
@@ -35,11 +42,12 @@ Next, I plan to add more features (still to be determined) and begin designing a
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/_4Cy8AbWqvQ?si=k65Cnbasy8dO3p2p" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
-For my first milestone, I essentially tested all sensors and components on my breadboard individually before wiring them all up onto the circuit. 
+
+For my first milestone, I essentially tested all of the sensors and components on my breadboard individually before wiring them all up together onto the circuit(see schematics). 
 
 My IoT Smart Lamp integrates several sensors and components, including the DHT11 (temperature/humidity sensor), HC-SR501 (motion detector), photoresistor (light sensor), a NeoPixel 12-LED ring, and an ESP8266 microcontroller.
 
-The project mainly relies on the ESP8266, a Wi-Fi-enabled microcontroller that allows all connected components to send and receive data over the internet. The DHT11 sensor measures both temperature and humidity. It uses a humidity sensor (which detects changes in capacitance) and a thermistor (which detects temperature changes via resistance). These readings are processed internally and output as digital data. The HC-SR501 motion sensor uses infrared to detect motion by sensing heat changes in its surroundings, signaling when movement is detected. The NeoPixel ring consists of 12 individually addressable RGB LEDs, each with its own integrated circuit. This allows for custom color and brightness control, adding a visual and aesthetic element to the lamp. Lastly, the photoresistor (or light-dependent resistor) adjusts brightness based on ambient light levels by varying its resistance depending on light exposure.
+The project mainly relies on the ESP8266, a Wi-Fi-enabled microcontroller that allows all connected components to send and receive data over the internet. The DHT11 sensor measures both temperature and humidity. It uses a humidity sensor (which detects changes in capacitance) and a thermistor (which detects temperature changes via resistance). These readings are processed internally and output as digital data. The HC-SR501 motion sensor uses infrared to detect motion by sensing heat changes in its surroundings, signaling when movement is detected. The NeoPixel ring consists of 16 individually addressable RGB LEDs, each with its own integrated circuit. This allows for custom color and brightness control, adding a visual and aesthetic element to the lamp. Lastly, the photoresistor (or light-dependent resistor) adjusts brightness based on ambient light levels by varying its resistance depending on light exposure.
 
 Together, these components provide a functional and customizable smart lamp system:
 
@@ -51,7 +59,7 @@ Together, these components provide a functional and customizable smart lamp syst
     
     -The photoresistor automatically adjusts brightness based on room lighting conditions.
 
-One of the biggest challenges I faced was that the tutorial I was originally provided used the Cayenne IoT platform, which has since shut down. This required me to search for alternative resources and experiment independently to determine the best way to wire my circuit and test individual components. Additionally, as someone with limited prior experience in physical computing and circuit wiring, I encountered some trial-and-error issues during setup. However, in the end, I was able to get the circuit functioning correctly.
+One of the biggest challenges I faced was that the tutorial I was originally provided used the Cayenne IoT platform, which has since shut down. This required me to search for alternative resources and experiment independently to determine the best way to wire my circuit and test individual components. Additionally, as someone with limited prior experience in physical computing and circuit wiring, I encountered some trial-and-error issues during setup. However, in the end, I was able to get the circuit functioning correctly, and found Adafruit IO to be a good platform for the user interface for my lamp.
 
 In the next milestone, I will focus on uploading and integrating all the code needed to make the components work together. I will also create an Adafruit IO dashboard, allowing the user to:
 
