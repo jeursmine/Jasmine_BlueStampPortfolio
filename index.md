@@ -85,7 +85,352 @@ By the end of the next milestone, the smart lamp will be fully functional, custo
 ![SCHEMATICS](jasminesketch_bb.png)
 
 # Code
+```c++
+#include "config.h"
+#include "Adafruit_NeoPixel.h"
+#include <DHT.h>
+#include <time.h>
 
+#define RING_PIN            D1
+#define RING_PIXEL_COUNT    16
+#define PIXEL_TYPE          NEO_GRB + NEO_KHZ800
+
+#define TEMP_DELAY          7
+
+#define DHTPIN              D2
+#define DHTTYPE             DHT11
+
+#define BUZZER_PIN          D7
+#define MOTION_PIN          D3
+
+int temperatureData;
+int humidityData;
+int lastMotionState = digitalRead(MOTION_PIN);
+long colorcode = 0xFFFFFF;
+String safemodeState = "0";
+
+Adafruit_NeoPixel ring = Adafruit_NeoPixel(RING_PIXEL_COUNT, RING_PIN, PIXEL_TYPE);
+DHT dht(DHTPIN, DHTTYPE);
+
+// Adafruit IO Feeds
+AdafruitIO_Feed *lights = io.feed("lights");
+AdafruitIO_Feed *humidity = io.feed("humidity");
+AdafruitIO_Feed *temperature = io.feed("temperature");
+AdafruitIO_Feed *buzzer = io.feed("buzzer");
+AdafruitIO_Feed *motion = io.feed("motion");
+AdafruitIO_Feed *safemode = io.feed("safemode");
+AdafruitIO_Feed *lightonoff = io.feed("lightonoff"); 
+AdafruitIO_Feed *alarmonoff = io.feed("alarmonoff");
+AdafruitIO_Feed *timeonoff = io.feed("timeonoff");
+
+long lightColor = 0;
+bool lightOn = false;
+bool masterLightEnabled = true; 
+
+String alarmTime = "";    
+bool alarmEnabled = false;
+bool alarmRinging = false;
+bool alarmTurnedOnLights = false;  // NEW
+
+void waitForTime() {
+  Serial.print("Waiting for time sync");
+  time_t now = time(nullptr);
+  while (now < 8 * 3600 * 2) {
+    delay(500);
+    Serial.print(".");
+    now = time(nullptr);
+  }
+  Serial.println(" Time synced.");
+}
+
+void setup() {
+  Serial.begin(115200);
+  while (!Serial);
+
+  Serial.print("Connecting to Adafruit IO");
+  io.connect();
+
+  lights->onMessage(lightHandler);
+  buzzer->onMessage(buzzerHandler);
+  safemode->onMessage(safemodeHandler);
+  lightonoff->onMessage(lightonoffHandler);
+  alarmonoff->onMessage(alarmonoffHandler);
+  timeonoff->onMessage(timeonoffHandler);
+
+  while (io.status() < AIO_CONNECTED) {
+    Serial.print(".");
+    delay(500);
+  }
+  Serial.println();
+
+  configTime(-7 * 3600, 0, "pool.ntp.org", "time.nist.gov");
+
+  waitForTime();
+
+  Serial.print("Current time after sync: ");
+  Serial.println(getCurrentTimeString());
+
+  Serial.println(io.statusText());
+
+  dht.begin();
+  delay(2000);
+  ring.begin();
+
+  pinMode(BUZZER_PIN, OUTPUT);
+  digitalWrite(BUZZER_PIN, LOW);
+  pinMode(MOTION_PIN, INPUT);
+
+  safemode->get();
+  lightonoff->get();
+  alarmonoff->get();
+  timeonoff->get();
+}
+
+void loop() {
+  io.run();
+
+  if (alarmEnabled) {
+    String currentTime = getCurrentTimeString();
+
+    Serial.print("Current time: ");
+    Serial.println(currentTime);
+    Serial.print("Alarm time: ");
+    Serial.println(alarmTime);
+
+    if (!alarmRinging && currentTime == alarmTime) {
+      Serial.println("-> Alarm time reached! Starting buzzer.");
+      alarmRinging = true;
+
+      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+        ring.setPixelColor(i, colorcode);
+      }
+      ring.show();
+
+      alarmTurnedOnLights = !lightOn;  // Track whether alarm turned on lights
+      lightOn = true;
+
+      Serial.println("-> Lights forced on for alarm.");
+    }
+
+    if (alarmRinging) {
+      digitalWrite(BUZZER_PIN, HIGH);
+    }
+  } else {
+    if (alarmRinging) {
+      Serial.println("-> Alarm disabled. Stopping buzzer and handling lights.");
+      alarmRinging = false;
+      digitalWrite(BUZZER_PIN, LOW);
+
+      if (alarmTurnedOnLights) {
+        for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+          ring.setPixelColor(i, 0);
+        }
+        ring.show();
+        lightOn = false;
+        Serial.println("-> Alarm turned off lights that it enabled.");
+      } else {
+        Serial.println("-> Alarm ended, but user lights remain on.");
+      }
+
+      alarmTurnedOnLights = false;
+    }
+  }
+
+  delay(7000);
+
+  float t = dht.readTemperature(false);
+  float h = dht.readHumidity(false);
+
+  while (t <= 1 || h <= 1) {
+    Serial.println("space");
+    t = dht.readTemperature(false);
+    h = dht.readHumidity(false);
+  }
+
+  if (isnan(t) || isnan(h)) {
+    Serial.println("-> Invalid DHT sensor readings. Skipping this cycle.");
+    return;
+  }
+
+  temperatureData = t - 5; //offset for dht11
+  humidityData = h;
+
+  Serial.print("-> Sending Temperature to Adafruit IO: ");
+  Serial.println(temperatureData);
+  Serial.print("-> Sending Humidity to Adafruit IO: ");
+  Serial.println(humidityData);
+
+  temperature->save(temperatureData);
+  humidity->save(humidityData);
+
+  int motionState = digitalRead(MOTION_PIN);
+
+  if (motionState != lastMotionState) {
+    lastMotionState = motionState;
+
+    if (motionState == HIGH) {
+      Serial.println("-> Motion Detected!");
+      motion->save(String("1"));
+
+      if (masterLightEnabled && !lightOn) {
+        long colorToSet = colorcode;
+        for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+          ring.setPixelColor(i, colorToSet);
+        }
+        ring.show();
+        lightColor = colorToSet;
+        lightOn = true;
+        Serial.println("-> Lights turned on due to motion.");
+      }
+
+      if (safemodeState == "1") {
+        digitalWrite(BUZZER_PIN, HIGH);
+        delay(5000);
+        digitalWrite(BUZZER_PIN, LOW);
+      }
+    } else {
+      Serial.println("-> No Motion Detected.");
+      lightOn = false;
+      motion->save(String("0"));
+    }
+  } else {
+    if (motionState == HIGH) {
+      Serial.println("-> Motion STILL Detected.");
+      if (safemodeState == "1") {
+        digitalWrite(BUZZER_PIN, HIGH);
+        delay(5000);
+        digitalWrite(BUZZER_PIN, LOW);
+      }
+
+      if (masterLightEnabled && !lightOn) {
+        long colorToSet = colorcode;
+        for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+          ring.setPixelColor(i, colorToSet);
+        }
+        ring.show();
+        lightColor = colorToSet;
+        lightOn = true;
+        Serial.println("-> Lights turned on due to motion.");
+      }
+
+    } else {
+      Serial.println("-> Still No Motion.");
+      lightOn = false;
+      digitalWrite(BUZZER_PIN, LOW);
+    }
+  }
+}
+
+void lightHandler(AdafruitIO_Data *data) {
+  delay(1000);
+  Serial.print("-> light HEX: ");
+  Serial.println(data->value());
+
+  if (!masterLightEnabled) {
+    Serial.println("-> Master light OFF: Ignoring color change.");
+    return;
+  }
+
+  lightColor = data->toNeoPixel();
+  colorcode = lightColor;
+
+  lightOn = (lightColor != 0);
+
+  for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+    ring.setPixelColor(i, lightColor);
+  }
+  ring.show();
+}
+
+void buzzerHandler(AdafruitIO_Data *data) {
+  String command = data->toString();
+  Serial.print("-> Buzzer command received: ");
+  Serial.println(command);
+
+  if (command == "1") {
+    digitalWrite(BUZZER_PIN, HIGH);
+    delay(5000);
+    digitalWrite(BUZZER_PIN, LOW);
+    buzzer->save(String("0"));
+  } else {
+    buzzer->save(String("0"));
+    digitalWrite(BUZZER_PIN, LOW);
+  }
+}
+
+void safemodeHandler(AdafruitIO_Data *data) {
+  safemodeState = data->toString();
+}
+
+
+
+void lightonoffHandler(AdafruitIO_Data *data) {
+  String val = data->toString();
+  Serial.print("-> Master light switch: ");
+  Serial.println(val);
+
+  if (val == "0") {
+    masterLightEnabled = false;
+    for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+      ring.setPixelColor(i, 0);
+    }
+    ring.show();
+    lightOn = false;
+    Serial.println("-> Master light OFF: All lights disabled.");
+  } else {
+    masterLightEnabled = true;
+    if (lightColor != 0) {
+      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+        ring.setPixelColor(i, lightColor);
+      }
+      ring.show();
+      lightOn = true;
+    }
+    Serial.println("-> Master light ON: Lighting re-enabled.");
+  }
+}
+
+void alarmonoffHandler(AdafruitIO_Data *data) {
+  String val = data->toString();
+  Serial.print("-> Alarm ON/OFF set to: ");
+  Serial.println(val);
+
+  alarmEnabled = (val == "1");
+
+  if (!alarmEnabled) {
+    alarmRinging = false;
+    digitalWrite(BUZZER_PIN, LOW);
+
+    if (alarmTurnedOnLights) {
+      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+        ring.setPixelColor(i, 0);
+      }
+      ring.show();
+      lightOn = false;
+      Serial.println("-> Alarm turned off lights that it enabled.");
+    } else {
+      Serial.println("-> Alarm ended, but user lights remain on.");
+    }
+
+    alarmTurnedOnLights = false;
+  }
+}
+
+void timeonoffHandler(AdafruitIO_Data *data) {
+  alarmTime = data->toString();
+  Serial.print("-> Alarm time set to: ");
+  Serial.println(alarmTime);
+}
+
+String getCurrentTimeString() {
+  time_t now = time(nullptr);
+  struct tm *timeinfo = localtime(&now);
+  char buffer[6];
+  sprintf(buffer, "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
+  return String(buffer);
+}
+
+```
 # Starter Project- Retro Arcade Console
 <iframe width="560" height="315" src="https://www.youtube.com/embed/hvmn-ZRGc-s?si=3SyQsaWPOCVCY1et" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 Components: 1 buzzer, 1 electric capacitator, 1 micro USB, 1 power cable, 1 self-switch, 1 self-switch cap, 1digitron display, 1IC chip, 2 LED dot matrix modules, 6 buttons, 6 button caps, 1 PCB, 8 M3x5mm screws, 2 M3x8mm screws, 4 copper columns, 4 hexagonal columns, 1 AAA battery case, and 6 arcrylis shells.
