@@ -432,7 +432,7 @@ String getCurrentTimeString() {
 }
 
 ```
-Config.h code: 
+Config.h code(YOU WILL NEED A NEW TAB ON ARDUINO FOR THIS)
 ```c++
 /************************ Adafruit IO Config *******************************/
 
