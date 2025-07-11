@@ -131,7 +131,7 @@ bool masterLightEnabled = true;
 String alarmTime = "";    
 bool alarmEnabled = false;
 bool alarmRinging = false;
-bool alarmTurnedOnLights = false;  // NEW
+bool alarmTurnedOnLights = false;  
 
 void waitForTime() {
   Serial.print("Waiting for time sync");
@@ -326,11 +326,6 @@ void lightHandler(AdafruitIO_Data *data) {
   delay(1000);
   Serial.print("-> light HEX: ");
   Serial.println(data->value());
-
-  if (!masterLightEnabled) {
-    Serial.println("-> Master light OFF: Ignoring color change.");
-    return;
-  }
 
   lightColor = data->toNeoPixel();
   colorcode = lightColor;
