@@ -6,16 +6,22 @@ The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, tempe
 
 
 ![Headstone Image](smallestpicture.png)
-  
+
 # Final Milestone
+
+For my final milestone, I added a 'breathing' light feature where the LED ring light pulses slowly. I mainly only had to modify the code using for loops to gradually turn the light on and off repeatedly. I didn't face any significant challenges modifying my code. 
+
+# Third Milestone
 
 Insert vid
 
-For my final milestone, I customized the wooden enclosure for my breadboard and added an alarm clock feature to my project. I started with a wooden box that had a clear lid and made physical modifications to allow the components to function properly. I drilled a hole in the back for the power cable, which was straightforward, and a more challenging hole in the front for the Fresnel lens of the motion sensor. Since the lens had a diameter of 0.9 inches, I first drilled a 0.5-inch hole, then carefully widened it using a Dremel with a sanding attachment until the lens fit securely. I also cut squares from a stencil-making sheet and glued them to the inside of the lid to serve as a light diffuser. Once these modifications were complete, I was able to place the breadboard inside and power it with no issues. Additionally, I removed the photoresistor and the resistor and wire that went along with it from my circuit, as it served no purpose in what I desired to be on my final project.
+For my third milestone, I customized the wooden enclosure for my breadboard and added an alarm clock feature to my project. I started with a wooden box that had a clear lid and made physical modifications to allow the components to function properly. I drilled a hole in the back for the power cable, which was straightforward, and a more challenging hole in the front for the Fresnel lens of the motion sensor. Since the lens had a diameter of 0.9 inches, I first drilled a 0.5-inch hole, then carefully widened it using a Dremel with a sanding attachment until the lens fit securely. I also cut squares from a stencil-making sheet and glued them to the inside of the lid to serve as a light diffuser. Once these modifications were complete, I was able to place the breadboard inside and power it with no issues. Additionally, I removed the photoresistor and the resistor and wire that went along with it from my circuit, as it served no purpose in what I desired to be on my final project.
 
 For my added feature, I decided to implement an alarm clock. I created two new feeds on Adafruit IO—“alarmonoff” to toggle the alarm and “time” to set the desired time in 24-hour format. I used a time library on Arduino to get the current time, formatted it properly and added an offset to change it to the correct time zone, and added logic so that the piezo buzzer would only ring when the current time matched the user input and the alarm was turned on. This feature added a practical function to the lamp and pushed the project closer to a fully integrated smart device.
 
 As stated before, the only challenge I faced was drilling the 0.9in hole into my box to fit the fresnel lens on my motion detector as the dremel was a bit hard to use. 
+
+Next, I will likely be adding another modification.
 
 Adafruit Dashboard: 
 ![adafruit pic](image.png)
@@ -123,6 +129,7 @@ AdafruitIO_Feed *safemode = io.feed("safemode");
 AdafruitIO_Feed *lightonoff = io.feed("lightonoff"); 
 AdafruitIO_Feed *alarmonoff = io.feed("alarmonoff");
 AdafruitIO_Feed *timeonoff = io.feed("timeonoff");
+AdafruitIO_Feed *breathing = io.feed("breathing");  // NEW
 
 long lightColor = 0;
 bool lightOn = false;
@@ -131,7 +138,8 @@ bool masterLightEnabled = true;
 String alarmTime = "";    
 bool alarmEnabled = false;
 bool alarmRinging = false;
-bool alarmTurnedOnLights = false;  // NEW
+bool alarmTurnedOnLights = false;
+bool breathingEnabled = false;  // NEW
 
 void waitForTime() {
   Serial.print("Waiting for time sync for alarm");
@@ -157,6 +165,7 @@ void setup() {
   lightonoff->onMessage(lightonoffHandler);
   alarmonoff->onMessage(alarmonoffHandler);
   timeonoff->onMessage(timeonoffHandler);
+  breathing->onMessage(breathingHandler); 
 
   while (io.status() < AIO_CONNECTED) {
     Serial.print(".");
@@ -185,6 +194,7 @@ void setup() {
   lightonoff->get();
   alarmonoff->get();
   timeonoff->get();
+  breathing->get(); 
 }
 
 void loop() {
@@ -207,7 +217,7 @@ void loop() {
       }
       ring.show();
 
-      alarmTurnedOnLights = !lightOn;  // Track whether alarm turned on lights
+      alarmTurnedOnLights = !lightOn;
       lightOn = true;
 
       Serial.println("-> Lights on for alarm.");
@@ -228,13 +238,39 @@ void loop() {
         }
         ring.show();
         lightOn = false;
-        Serial.println("-> Alarm turned off th elights they enabled.");
+        Serial.println("-> Alarm turned off the lights they enabled.");
       } else {
         Serial.println("-> Alarm ended, but user lights remain on.");
       }
 
       alarmTurnedOnLights = false;
     }
+  }
+
+  if (breathingEnabled && masterLightEnabled) {
+    for (int b = 0; b < 256; b += 5) {
+      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
+      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
+      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
+
+      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+        ring.setPixelColor(i, r, g, b_);
+      }
+      ring.show();
+      delay(40);
+    }
+    for (int b = 255; b >= 0; b -= 5) {
+      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
+      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
+      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
+
+      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+        ring.setPixelColor(i, r, g, b_);
+      }
+      ring.show();
+      delay(40);
+    }
+    return;  
   }
 
   delay(7000);
@@ -253,7 +289,7 @@ void loop() {
     return;
   }
 
-  temperatureData = t - 5; //offset for dht11
+  temperatureData = t - 5;
   humidityData = h;
 
   Serial.print("-> Sending Temperature to Adafruit IO: ");
@@ -363,8 +399,6 @@ void safemodeHandler(AdafruitIO_Data *data) {
   safemodeState = data->toString();
 }
 
-
-
 void lightonoffHandler(AdafruitIO_Data *data) {
   String val = data->toString();
   Serial.print("-> Master light switch: ");
@@ -421,6 +455,13 @@ void timeonoffHandler(AdafruitIO_Data *data) {
   alarmTime = data->toString();
   Serial.print("-> Alarm time set to: ");
   Serial.println(alarmTime);
+}
+
+void breathingHandler(AdafruitIO_Data *data) {
+  String val = data->toString();
+  Serial.print("-> Breathing mode set to: ");
+  Serial.println(val);
+  breathingEnabled = (val == "1");
 }
 
 String getCurrentTimeString() {
