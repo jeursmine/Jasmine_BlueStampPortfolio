@@ -210,7 +210,7 @@ void loop() {
     Serial.println(alarmTime);
 
     if (!alarmRinging && currentTime == alarmTime) {
-      Serial.println("-> Alarm time reached! Starting buzzer.");
+      Serial.println("Alarm time reached! Starting buzzer.");
       alarmRinging = true;
 
       for (int i = 0; i < RING_PIXEL_COUNT; i++) {
@@ -221,7 +221,7 @@ void loop() {
       alarmTurnedOnLights = !lightOn;
       lightOn = true;
 
-      Serial.println("-> Lights on for alarm.");
+      Serial.println("Lights on for alarm.");
     }
 
     if (alarmRinging) {
@@ -229,7 +229,7 @@ void loop() {
     }
   } else {
     if (alarmRinging) {
-      Serial.println("-> Alarm disabled, stopping buzzer/working w lights.");
+      Serial.println("Alarm disabled, stopping buzzer/working w lights.");
       alarmRinging = false;
       digitalWrite(BUZZER_PIN, LOW);
 
@@ -239,9 +239,9 @@ void loop() {
         }
         ring.show();
         lightOn = false;
-        Serial.println("-> Alarm turned off the lights they enabled.");
+        Serial.println("Alarm turned off the lights they enabled.");
       } else {
-        Serial.println("-> Alarm ended, but user lights remain on.");
+        Serial.println("Alarm ended, but user lights remain on.");
       }
 
       alarmTurnedOnLights = false;
@@ -249,30 +249,36 @@ void loop() {
   }
 
   if (breathingEnabled && masterLightEnabled) {
-    for (int b = 0; b < 256; b += 5) {
-      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
-      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
-      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
+  for (int b = 0; b < 256; b += 5) {
+    int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
+    int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
+    int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
 
-      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
-        ring.setPixelColor(i, r, g, b_);
-      }
-      ring.show();
-      delay(40);
+    for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+      ring.setPixelColor(i, r, g, b_);
     }
-    for (int b = 255; b >= 0; b -= 5) {
-      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
-      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
-      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
-
-      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
-        ring.setPixelColor(i, r, g, b_);
-      }
-      ring.show();
-      delay(40);
-    }
-    return;  
+    ring.show();
+    delay(40);
   }
+  for (int b = 255; b >= 0; b -= 5) {
+    int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
+    int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
+    int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
+
+    for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+      ring.setPixelColor(i, r, g, b_);
+    }
+    ring.show();
+    delay(40);
+  }
+  return;
+} else if (masterLightEnabled && lightOn) {
+  for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+    ring.setPixelColor(i, colorcode);
+  }
+  ring.show();
+}
+
 
   delay(7000);
 
@@ -286,16 +292,16 @@ void loop() {
   }
 
   if (isnan(t) || isnan(h)) {
-    Serial.println("-> Invalid DHT sensor readings, skipping this cycle.");
+    Serial.println("Invalid DHT sensor readings, skipping this cycle.");
     return;
   }
 
   temperatureData = t - 5;
   humidityData = h;
 
-  Serial.print("-> Sending Temperature to Adafruit IO: ");
+  Serial.print("Sending Temperature to Adafruit IO: ");
   Serial.println(temperatureData);
-  Serial.print("-> Sending Humidity to Adafruit IO: ");
+  Serial.print("Sending Humidity to Adafruit IO: ");
   Serial.println(humidityData);
 
   temperature->save(temperatureData);
@@ -307,7 +313,7 @@ void loop() {
     lastMotionState = motionState;
 
     if (motionState == HIGH) {
-      Serial.println("-> Motion Detected!");
+      Serial.println("Motion Detected!");
       motion->save(String("1"));
 
       if (masterLightEnabled && !lightOn) {
@@ -318,7 +324,7 @@ void loop() {
         ring.show();
         lightColor = colorToSet;
         lightOn = true;
-        Serial.println("-> Lights turned on due to motion.");
+        Serial.println("Lights turned on due to motion.");
       }
 
       if (safemodeState == "1") {
@@ -327,13 +333,13 @@ void loop() {
         digitalWrite(BUZZER_PIN, LOW);
       }
     } else {
-      Serial.println("-> No Motion Detected.");
+      Serial.println("No Motion Detected.");
       lightOn = false;
       motion->save(String("0"));
     }
   } else {
     if (motionState == HIGH) {
-      Serial.println("-> Motion STILL Detected.");
+      Serial.println("Motion STILL Detected.");
       if (safemodeState == "1") {
         digitalWrite(BUZZER_PIN, HIGH);
         delay(5000);
@@ -348,11 +354,11 @@ void loop() {
         ring.show();
         lightColor = colorToSet;
         lightOn = true;
-        Serial.println("-> Lights turned on due to motion.");
+        Serial.println("Lights turned on due to motion.");
       }
 
     } else {
-      Serial.println("-> Still No Motion.");
+      Serial.println("Still No Motion.");
       lightOn = false;
       digitalWrite(BUZZER_PIN, LOW);
     }
@@ -361,14 +367,14 @@ void loop() {
 
 void lightHandler(AdafruitIO_Data *data) {
   delay(1000);
-  Serial.print("-> light HEX: ");
+  Serial.print("light HEX: ");
   Serial.println(data->value());
 
   lightColor = data->toNeoPixel();
   colorcode = lightColor;
 
   if (!masterLightEnabled) {
-    Serial.println("-> Master light is OFF, ignoring color change.");
+    Serial.println("Master light is OFF, ignoring color change.");
     return;
   }
 
@@ -382,7 +388,7 @@ void lightHandler(AdafruitIO_Data *data) {
 
 void buzzerHandler(AdafruitIO_Data *data) {
   String command = data->toString();
-  Serial.print("-> Buzzer command received: ");
+  Serial.print("Buzzer command received: ");
   Serial.println(command);
 
   if (command == "1") {
@@ -402,7 +408,7 @@ void safemodeHandler(AdafruitIO_Data *data) {
 
 void lightonoffHandler(AdafruitIO_Data *data) {
   String val = data->toString();
-  Serial.print("-> Master light switch: ");
+  Serial.print("Master light switch: ");
   Serial.println(val);
 
   if (val == "0") {
@@ -412,7 +418,7 @@ void lightonoffHandler(AdafruitIO_Data *data) {
     }
     ring.show();
     lightOn = false;
-    Serial.println("-> Master light OFF: All lights disabled.");
+    Serial.println("Master light OFF: All lights disabled.");
   } else {
     masterLightEnabled = true;
     if (lightColor != 0) {
@@ -422,13 +428,13 @@ void lightonoffHandler(AdafruitIO_Data *data) {
       ring.show();
       lightOn = true;
     }
-    Serial.println("-> Master light ON: Lighting re-enabled.");
+    Serial.println("Master light ON: Lighting re-enabled.");
   }
 }
 
 void alarmonoffHandler(AdafruitIO_Data *data) {
   String val = data->toString();
-  Serial.print("-> Alarm ON/OFF set to: ");
+  Serial.print("Alarm ON/OFF set to: ");
   Serial.println(val);
 
   alarmEnabled = (val == "1");
@@ -443,9 +449,9 @@ void alarmonoffHandler(AdafruitIO_Data *data) {
       }
       ring.show();
       lightOn = false;
-      Serial.println("-> Alarm turned off lights that it enabled.");
+      Serial.println("Alarm turned off lights that it enabled.");
     } else {
-      Serial.println("-> Alarm ended, but user lights remain on.");
+      Serial.println("Alarm ended, but user lights remain on.");
     }
 
     alarmTurnedOnLights = false;
@@ -454,13 +460,13 @@ void alarmonoffHandler(AdafruitIO_Data *data) {
 
 void timeonoffHandler(AdafruitIO_Data *data) {
   alarmTime = data->toString();
-  Serial.print("-> Alarm time set to: ");
+  Serial.print("Alarm time set to: ");
   Serial.println(alarmTime);
 }
 
 void breathingHandler(AdafruitIO_Data *data) {
   String val = data->toString();
-  Serial.print("-> Breathing mode set to: ");
+  Serial.print("Breathing mode set to: ");
   Serial.println(val);
   breathingEnabled = (val == "1");
 }
