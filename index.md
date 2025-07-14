@@ -131,10 +131,10 @@ bool masterLightEnabled = true;
 String alarmTime = "";    
 bool alarmEnabled = false;
 bool alarmRinging = false;
-bool alarmTurnedOnLights = false;  
+bool alarmTurnedOnLights = false;  // NEW
 
 void waitForTime() {
-  Serial.print("Waiting for time sync");
+  Serial.print("Waiting for time sync for alarm");
   time_t now = time(nullptr);
   while (now < 8 * 3600 * 2) {
     delay(500);
@@ -210,7 +210,7 @@ void loop() {
       alarmTurnedOnLights = !lightOn;  // Track whether alarm turned on lights
       lightOn = true;
 
-      Serial.println("-> Lights forced on for alarm.");
+      Serial.println("-> Lights on for alarm.");
     }
 
     if (alarmRinging) {
@@ -218,7 +218,7 @@ void loop() {
     }
   } else {
     if (alarmRinging) {
-      Serial.println("-> Alarm disabled. Stopping buzzer and handling lights.");
+      Serial.println("-> Alarm disabled, stopping buzzer/working w lights.");
       alarmRinging = false;
       digitalWrite(BUZZER_PIN, LOW);
 
@@ -228,7 +228,7 @@ void loop() {
         }
         ring.show();
         lightOn = false;
-        Serial.println("-> Alarm turned off lights that it enabled.");
+        Serial.println("-> Alarm turned off th elights they enabled.");
       } else {
         Serial.println("-> Alarm ended, but user lights remain on.");
       }
@@ -249,7 +249,7 @@ void loop() {
   }
 
   if (isnan(t) || isnan(h)) {
-    Serial.println("-> Invalid DHT sensor readings. Skipping this cycle.");
+    Serial.println("-> Invalid DHT sensor readings, skipping this cycle.");
     return;
   }
 
@@ -329,6 +329,11 @@ void lightHandler(AdafruitIO_Data *data) {
 
   lightColor = data->toNeoPixel();
   colorcode = lightColor;
+
+  if (!masterLightEnabled) {
+    Serial.println("-> Master light is OFF, ignoring color change.");
+    return;
+  }
 
   lightOn = (lightColor != 0);
 
