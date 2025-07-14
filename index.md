@@ -130,7 +130,7 @@ AdafruitIO_Feed *safemode = io.feed("safemode");
 AdafruitIO_Feed *lightonoff = io.feed("lightonoff"); 
 AdafruitIO_Feed *alarmonoff = io.feed("alarmonoff");
 AdafruitIO_Feed *timeonoff = io.feed("timeonoff");
-AdafruitIO_Feed *breathing = io.feed("breathing");  // NEW
+AdafruitIO_Feed *breathing = io.feed("breathing");  
 
 long lightColor = 0;
 bool lightOn = false;
@@ -140,7 +140,7 @@ String alarmTime = "";
 bool alarmEnabled = false;
 bool alarmRinging = false;
 bool alarmTurnedOnLights = false;
-bool breathingEnabled = false;  // NEW
+bool breathingEnabled = false;  
 
 void waitForTime() {
   Serial.print("Waiting for time sync for alarm");
