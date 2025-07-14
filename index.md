@@ -8,12 +8,13 @@ The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, tempe
 ![Headstone Image](smallestpicture.png)
 
 # Final Milestone
+Insert Vid
 
 For my final milestone, I added a 'breathing' light feature where the LED ring light pulses slowly. I mainly only had to modify the code using for loops to gradually turn the light on and off repeatedly. I didn't face any significant challenges modifying my code. 
 
 # Third Milestone
 
-Insert vid
+<iframe width="560" height="315" src="https://www.youtube.com/embed/nmg4USzm_U4?si=tk98zS85_rgiffTB" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For my third milestone, I customized the wooden enclosure for my breadboard and added an alarm clock feature to my project. I started with a wooden box that had a clear lid and made physical modifications to allow the components to function properly. I drilled a hole in the back for the power cable, which was straightforward, and a more challenging hole in the front for the Fresnel lens of the motion sensor. Since the lens had a diameter of 0.9 inches, I first drilled a 0.5-inch hole, then carefully widened it using a Dremel with a sanding attachment until the lens fit securely. I also cut squares from a stencil-making sheet and glued them to the inside of the lid to serve as a light diffuser. Once these modifications were complete, I was able to place the breadboard inside and power it with no issues. Additionally, I removed the photoresistor and the resistor and wire that went along with it from my circuit, as it served no purpose in what I desired to be on my final project.
 
