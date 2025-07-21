@@ -465,8 +465,6 @@ String getCurrentTimeString() {
   sprintf(buffer, "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
   return String(buffer);
 }
-
-
 ```
 Config.h code(YOU WILL NEED A NEW TAB ON ARDUINO FOR THIS)
 ```c++
