@@ -249,28 +249,7 @@ void loop() {
   }
 
   if (breathingEnabled && masterLightEnabled) {
-    for (int b = 0; b < 256; b += 5) {
-      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
-      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
-      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
-
-      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
-        ring.setPixelColor(i, r, g, b_);
-      }
-      ring.show();
-      delay(40);
-    }
-    for (int b = 255; b >= 0; b -= 5) {
-      int r = (uint8_t)((colorcode >> 16) & 0xFF) * b / 255;
-      int g = (uint8_t)((colorcode >> 8) & 0xFF) * b / 255;
-      int b_ = (uint8_t)(colorcode & 0xFF) * b / 255;
-
-      for (int i = 0; i < RING_PIXEL_COUNT; i++) {
-        ring.setPixelColor(i, r, g, b_);
-      }
-      ring.show();
-      delay(40);
-    }
+    breathingCycle();
     return;
   } else if (masterLightEnabled && lightOn) {
     for (int i = 0; i < RING_PIXEL_COUNT; i++) {
@@ -315,8 +294,6 @@ void loop() {
       Serial.println("Motion Detected!");
       motion->save(String("1"));
 
-    
-
       if (safemodeState == "1") {
         digitalWrite(BUZZER_PIN, HIGH);
         delay(5000);
@@ -335,9 +312,6 @@ void loop() {
         delay(5000);
         digitalWrite(BUZZER_PIN, LOW);
       }
-
-      
-
     } else {
       Serial.println("Still No Motion.");
       lightOn = false;
@@ -353,6 +327,29 @@ void loop() {
     lightOn = true;
     Serial.println("Lights auto-on due to master switch (no motion needed).");
   }
+}
+
+void breathingCycle() {
+  for (int b = 0; b < 256; b += 5) {
+    if (!breathingEnabled) return;
+    setRingColorFade(b);
+    delay(40);
+  }
+  for (int b = 255; b >= 0; b -= 5) {
+    if (!breathingEnabled) return;
+    setRingColorFade(b);
+    delay(40);
+  }
+}
+
+void setRingColorFade(int brightness) {
+  int r = ((colorcode >> 16) & 0xFF) * brightness / 255;
+  int g = ((colorcode >> 8) & 0xFF) * brightness / 255;
+  int b = (colorcode & 0xFF) * brightness / 255;
+  for (int i = 0; i < RING_PIXEL_COUNT; i++) {
+    ring.setPixelColor(i, r, g, b);
+  }
+  ring.show();
 }
 
 void lightHandler(AdafruitIO_Data *data) {
@@ -468,6 +465,7 @@ String getCurrentTimeString() {
   sprintf(buffer, "%02d:%02d", timeinfo->tm_hour, timeinfo->tm_min);
   return String(buffer);
 }
+
 
 ```
 Config.h code(YOU WILL NEED A NEW TAB ON ARDUINO FOR THIS)
