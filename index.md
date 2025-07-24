@@ -8,7 +8,7 @@ The IoT Smart Lamp is a WiFi-connected LED system that responds to motion, tempe
 ![Headstone Image](smallestpicture.png)
 
 # Final Milestone
-Insert Vid
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KNucIaHj2PE?si=tWlp67X_YYSMB1HF" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 For my final milestone, I added a 'breathing' light feature where the LED ring light pulses slowly. I mainly only had to modify the code using for loops to gradually turn the light on and off repeatedly. I didn't face any significant challenges modifying my code. 
 
